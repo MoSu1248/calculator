@@ -1,0 +1,57 @@
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter-VariableFont_opsz,wght.ttf")
+    format("truetype-variations");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  /* Background */
+  --bg-primary: #f0f0f3;
+  --bg-display: #e4e4e8;
+
+  /* Buttons */
+  --btn-base: rgba(255, 255, 255, 0.4);
+  --btn-border: rgba(255, 255, 255, 0.6);
+  --btn-shadow-light: rgba(255, 255, 255, 0.8);
+  --btn-shadow-dark: rgba(174, 174, 192, 0.4);
+
+  /* Text */
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b6b6b;
+  --text-display: #1a1a1a;
+
+  /* Accent colors */
+  --accent-primary: #f5a623;
+  --accent-secondary: #2ec4b6;
+  --accent-equals: #2ec4b6;
+
+  /* Glass effect */
+  --glass-bg: rgba(255, 255, 255, 0.4);
+  --glass-blur: blur(10px);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.6);
+
+  /* Border radii */
+  --radius-btn: 16px;
+  --radius-calc: 32px;
+
+  /* Typography */
+  --font-main: "Inter", sans-serif;
+  --font-size-display: 3rem;
+  --font-size-expression: 1rem;
+  --font-size-btn: 1.25rem;
+
+  --btn-number-weight: 400;
+  --btn-operator-weight: 600;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main);
+}
