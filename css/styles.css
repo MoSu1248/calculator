@@ -7,45 +7,41 @@
 }
 
 :root {
-  /* Background */
+  /* Colors */
   --bg-primary: #f0f0f3;
-  --bg-display: #e4e4e8;
 
-  /* Buttons */
-  --btn-base: rgba(255, 255, 255, 0.4);
-  --btn-border: rgba(255, 255, 255, 0.6);
+  --text-primary: #5e5e5e;
+  --text-secondary: #858484;
+
+  --accent-primary: #f5a623;
+  --accent-secondary: #2ec4b6;
+
+  /* Button system */
+  --btn-bg: var(--bg-primary);
   --btn-shadow-light: rgba(255, 255, 255, 0.8);
   --btn-shadow-dark: rgba(174, 174, 192, 0.4);
 
-  /* Text */
-  --text-primary: #1a1a1a;
-  --text-secondary: #6b6b6b;
-  --text-display: #1a1a1a;
-
-  /* Accent colors */
-  --accent-primary: #f5a623;
-  --accent-secondary: #2ec4b6;
-  --accent-equals: #2ec4b6;
-
-  /* Glass effect */
+  /* Glass */
   --glass-bg: rgba(255, 255, 255, 0.4);
   --glass-blur: blur(10px);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.6);
 
-  /* Border radii */
-  --radius-btn: 16px;
-  --radius-calc: 32px;
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 32px;
 
   /* Typography */
   --font-main: "Inter", sans-serif;
-  --font-size-display: 3rem;
-  --font-size-expression: 1rem;
-  --font-size-btn: 1.25rem;
+  --fs-display: 3rem;
+  --fs-btn: 1.5rem;
+  --fs-btn-operator: 1.6rem;
 
-  --btn-number-weight: 400;
-  --btn-operator-weight: 600;
+  --fw-normal: 400;
+  --fw-bold: 600;
 }
 
+/* Reset */
 * {
   margin: 0;
   padding: 0;
@@ -54,4 +50,141 @@
 
 body {
   font-family: var(--font-main);
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-x: hidden;
+}
+
+/* Header */
+.header {
+  margin: 2rem auto 0;
+  font-size: var(--fs-display);
+  color: var(--accent-primary);
+  opacity: 0.8;
+}
+
+/* Calculator layout */
+.calculator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  padding: 1rem;
+}
+
+.calculator__screenContainer {
+  width: 80%;
+  position: relative;
+}
+
+.calculator__display {
+  width: 100%;
+  padding: 6rem 1rem 1rem;
+
+  font-size: var(--fs-display);
+  text-align: right;
+  color: var(--text-primary);
+
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+
+  box-shadow:
+    inset -4px -4px 10px var(--btn-shadow-light),
+    inset 4px 4px 10px var(--btn-shadow-dark);
+}
+
+.calculator__operator--value {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 1;
+  font-size: var(--fs-display);
+  color: var(--text-secondary);
+}
+
+/* Button grid */
+.calculator__btns {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 80%;
+}
+
+.calculator__row {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Base button */
+.calculator__btn {
+  flex: 1;
+  height: 5rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-btn);
+  font-weight: var(--fw-normal);
+  background: var(--btn-bg);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  box-shadow:
+    -4px -4px 8px var(--btn-shadow-light),
+    4px 4px 8px var(--btn-shadow-dark);
+
+  transition: all 0.2s ease-in-out;
+}
+
+/* Variants */
+.calculator__btn--operator,
+.calculator__btn--equals {
+  color: var(--accent-secondary);
+  font-size: var(--fs-btn-operator);
+  font-weight: var(--fw-bold);
+}
+
+.calculator__btn--clear {
+  color: var(--accent-primary);
+}
+
+.calculator__btn--zero {
+  flex: 2 1 0;
+}
+
+/* States */
+.calculator__btn:hover {
+  color: var(--accent-primary);
+}
+
+.calculator__btn:active,
+.calculator__btn.active {
+  transform: scale(0.98);
+
+  box-shadow:
+    inset -2px -2px 6px var(--btn-shadow-light),
+    inset 2px 2px 6px var(--btn-shadow-dark);
+}
+
+/* Clear override state */
+.calculator__btn--clear:active,
+.calculator__btn--clear.active {
+  color: var(--accent-secondary);
+}
+
+.footer {
+  padding: 1rem;
+  text-align: center;
 }
