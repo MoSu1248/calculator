@@ -60,10 +60,38 @@ body {
 
 /* Header */
 .header {
-  margin: 2rem auto 0;
+  margin: 2rem 0;
   font-size: var(--fs-display);
   color: var(--accent-primary);
   opacity: 0.8;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  align-items: end;
+}
+
+.header__heading {
+  font-weight: 100;
+  letter-spacing: 1.2rem;
+}
+
+.header__border {
+  background-color: #5e5e5e;
+  height: 2px;
+  margin-bottom: 1rem;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+  width: 50px;
+  transform: translate(-20%);
+}
+
+@keyframes fadeIn {
+  from {
+    width: 0;
+  }
+  to {
+    width: 50px;
+  }
 }
 
 /* Calculator layout */
@@ -103,6 +131,11 @@ body {
   box-shadow:
     inset -4px -4px 10px var(--btn-shadow-light),
     inset 4px 4px 10px var(--btn-shadow-dark);
+}
+
+.calculator__display.error-state {
+  color: var(--accent-primary);
+  text-align: center;
 }
 
 .calculator__operator--value {
