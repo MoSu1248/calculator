@@ -1,11 +1,75 @@
-// GLOBAL SCOPE
-let value_1 = "";
-let value_2 = "";
-let operater = null;
+// GLOBAL STATE
+let state = {
+  value_1: "",
+  value_2: "",
+  operator: null,
+  isError: false,
+  justEvaluated: false,
+};
 
 const btnsContainer = document.querySelector(".calculator__btns");
 const display = document.querySelector(".calculator__display");
+const displayOperator = document.querySelector(".calculator__operator--value");
 
+// Keyboard Handler
+document.addEventListener("keydown", (e) => {
+  const key = e.key;
+  if (e.repeat) return;
+
+  let selectorKey = key;
+  if (key === "Enter") {
+    e.preventDefault();
+    selectorKey = "=";
+  } else if (key === "Backspace") {
+    selectorKey = "backspace";
+  } else if (key === "Escape") {
+    selectorKey = "clear";
+  }
+
+  const button = document.querySelector(`[data-value="${selectorKey}"]`);
+  if (button) button.classList.add("active");
+
+  if (!isNaN(key)) {
+    handleInput("number", key);
+    return;
+  }
+
+  if (key === "+" || key === "-" || key === "*" || key === "/") {
+    handleInput("operator", key);
+    return;
+  }
+
+  if (key === "Enter" || key === "=") {
+    handleInput("equals");
+    return;
+  }
+
+  if (key === "Backspace") {
+    handleInput("backspace");
+    return;
+  }
+
+  if (key === "Escape") {
+    handleInput("clear");
+    return;
+  }
+});
+
+document.addEventListener("keyup", (e) => {
+  const key = e.key;
+
+  let selectorKey = key;
+
+  if (key === "Enter") selectorKey = "=";
+  if (key === "Backspace") selectorKey = "backspace";
+  if (key === "Escape") selectorKey = "clear";
+
+  const button = document.querySelector(`[data-value="${selectorKey}"]`);
+
+  if (button) button.classList.remove("active");
+});
+
+// Button Handler
 btnsContainer.addEventListener("click", (e) => {
   const btn = e.target.closest(".calculator__btn");
   if (!btn) return;
@@ -13,69 +77,73 @@ btnsContainer.addEventListener("click", (e) => {
   handleInput(btn.dataset.action, btn.dataset.value);
 });
 
+// Input Function
 function handleInput(action, value) {
-  if (action === "number") {
-    if (!operater) {
-      value_1 += value;
-      display.value = value_1;
-    } else {
-      value_2 += value;
-      display.value = value_2;
-    }
+  if (blockIfError(action)) return;
+
+  switch (action) {
+    case "number":
+      handleNumber(value);
+      break;
+    case "operator":
+      handleOperator(value);
+      break;
+    case "equals":
+      equals();
+      break;
+    case "clear":
+      clear();
+      break;
+    case "backspace":
+      backspace();
+      break;
+    case "decimal":
+      handleDecimal();
+      break;
+    case "percentage":
+      handlePercentage();
+      break;
   }
 
-  if (action === "operator") {
-    if (value_1 !== "" && operater && value_2 !== "") {
-      const result = operate(operater, value_1, value_2);
+  render();
+}
 
-      value_1 = result.toString();
-      value_2 = "";
-
-      display.value = value_1;
-    }
-
-    operater = value;
-    display.value = value_1;
+// Rendering Function
+function render() {
+  if (state.isError) {
+    display.value = "You Broke It.";
+    displayOperator.innerHTML = "";
+    return;
   }
 
-  if (action === "equals") {
-    if (!operater || value_1 === "" || value_2 === "") return;
+  display.value = state.value_2 !== "" ? state.value_2 : state.value_1 || "0";
+  console.log(state);
 
-    const result = operate(operater, value_1, value_2);
-
-    display.value = result;
-
-    value_1 = result.toString();
-    value_2 = "";
-    operater = null;
-  }
-
-  if (action === "clear") {
-    clear();
-  }
-
-  if (action === "backspace") {
-    backspace();
+  if (!state.operator) {
+    displayOperator.innerHTML = "";
+  } else if (state.operator === "*") {
+    displayOperator.innerHTML = "×";
+  } else if (state.operator === "/") {
+    displayOperator.innerHTML = "÷";
+  } else {
+    displayOperator.innerHTML = state.operator;
   }
 }
 
-// Math Operations
+// Math Function
 const add = (a, b) => a + b;
-
 const subtract = (a, b) => a - b;
-
 const multiply = (a, b) => a * b;
 
 const divide = (a, b) => {
-  if (b === 0) return "Error";
   return a / b;
 };
 
-const operate = (operator, num1, num2) => {
-  const a = parseFloat(num1);
-  const b = parseFloat(num2);
+const operate = (op, a, b) => {
+  a = parseFloat(a);
+  b = parseFloat(b);
 
-  switch (operator) {
+  switch (op) {
     case "+":
       return add(a, b);
     case "-":
@@ -84,51 +152,111 @@ const operate = (operator, num1, num2) => {
       return multiply(a, b);
     case "/":
       return divide(a, b);
-    default:
-      return null;
   }
 };
 
 // Clear Function
-const clear = () => {
-  value_1 = "";
-  value_2 = "";
-  operater = null;
-  display.value = "0";
-};
+function clear() {
+  state.value_1 = "";
+  state.value_2 = "";
+  state.operator = null;
+  state.isError = false;
+  state.justEvaluated = false;
+}
 
 // Backspace Function
-const backspace = () => {
-  if (!operater) {
-    value_1 = value_1.slice(0, -1);
-    display.value = value_1 || "0";
+function backspace() {
+  if (state.operator && state.value_2 === "") {
+    state.operator = null;
+    return;
+  }
+
+  if (!state.operator) {
+    state.value_1 = state.value_1.slice(0, -1);
   } else {
-    value_2 = value_2.slice(0, -1);
-    display.value = value_2 || "0";
+    state.value_2 = state.value_2.slice(0, -1);
   }
-};
+}
 
-// Keyboard functionality
-document.addEventListener("keydown", (e) => {
-  const key = e.key;
+// Number Function
+function handleNumber(value) {
+  if (!state.operator) {
+    if (state.justEvaluated) {
+      clear();
+      state.justEvaluated = false;
+    }
 
-  if (!isNaN(key)) {
-    handleInput("number", key);
+    state.value_1 = (state.value_1 + value).slice(0, 10);
+  } else {
+    state.value_2 = (state.value_2 + value).slice(0, 10);
+  }
+}
+
+// Operator Function
+function handleOperator(value) {
+  if (state.value_1 === "" && value === "-") {
+    state.value_1 = "-";
+    return;
   }
 
-  if (["+", "-", "*", "/"].includes(key)) {
-    handleInput("operator", key);
+  if (state.value_1 === "") return;
+
+  if (canCompute()) {
+    const result = operate(state.operator, state.value_1, state.value_2);
+
+    state.value_1 = result.toString();
+    state.value_2 = "";
   }
 
-  if (key === "Enter" || key === "=") {
-    handleInput("equals", "=");
+  state.operator = value;
+}
+
+// Equals Function
+function equals() {
+  if (!state.operator || state.value_1 === "" || state.value_2 === "") return;
+
+  if (state.operator === "/" && Number(state.value_2) === 0) {
+    state.isError = true;
+    return;
   }
 
-  if (key === "Backspace") {
-    handleInput("backspace");
-  }
+  const result = operate(state.operator, state.value_1, state.value_2);
 
-  if (key === "Escape") {
-    handleInput("clear");
+  state.value_1 = Number(result.toFixed(10)).toString();
+  state.value_2 = "";
+  state.operator = null;
+  state.justEvaluated = true;
+}
+
+// Decimal Function
+function handleDecimal() {
+  let current = !state.operator ? state.value_1 : state.value_2;
+
+  if (current.includes(".")) return;
+
+  if (!state.operator) state.value_1 += ".";
+  else state.value_2 += ".";
+}
+
+// Percentage Function
+function handlePercentage() {
+  if (!state.operator && state.value_1 !== "") {
+    state.value_1 = (parseFloat(state.value_1) / 100).toString();
+  } else if (state.operator && state.value_2 !== "") {
+    state.value_2 = (parseFloat(state.value_2) / 100).toString();
   }
-});
+}
+
+// Blocking Error
+function blockIfError(action) {
+  if (state.isError && action === "number") {
+    clear();
+    return false;
+  }
+  return state.isError && action !== "clear";
+}
+
+// Check fucntion
+function canCompute() {
+  return state.operator && state.value_1 !== "" && state.value_2 !== "";
+}
