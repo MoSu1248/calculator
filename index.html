@@ -7,7 +7,10 @@
     <title>SoftMath</title>
   </head>
   <body>
-    <header class="header"><h1>SoftMath</h1></header>
+    <header class="header">
+      <h1 class="header__heading">SoftMath</h1>
+      <span class="header__border"></span>
+    </header>
 
     <main id="main-content">
       <section class="calculator">
@@ -109,7 +112,7 @@
             </button>
           </div>
 
-          <div class="calculator__row ">
+          <div class="calculator__row calculator__row--last">
             <button
               class="calculator__btn calculator__btn--zero"
               data-action="number"
@@ -125,7 +128,7 @@
             >
               =
             </button>
-            
+          </div>
         </div>
       </section>
     </main>
