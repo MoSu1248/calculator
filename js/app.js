@@ -111,10 +111,13 @@ function handleInput(action, value) {
 // Rendering Function
 function render() {
   if (state.isError) {
-    display.value = "You Broke It.";
+    display.value = "You Broke It :( ";
     displayOperator.innerHTML = "";
+    display.classList.add("error-state");
     return;
   }
+
+  display.classList.remove("error-state");
 
   display.value = state.value_2 !== "" ? state.value_2 : state.value_1 || "0";
   console.log(state);
