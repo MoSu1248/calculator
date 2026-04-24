@@ -6,6 +6,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "JetBrainsMono";
+  src: url("../assets/fonts/JetBrainsMono-VariableFont_wght.ttf")
+    format("truetype-variations");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 :root {
   /* Colors */
   --bg-primary: #f0f0f3;
@@ -33,6 +41,8 @@
 
   /* Typography */
   --font-main: "Inter", sans-serif;
+  --font-mono: "JetBrainsMono", monospace;
+
   --fs-display: 3rem;
   --fs-btn: 1.5rem;
   --fs-btn-operator: 1.6rem;
@@ -68,7 +78,7 @@ body {
   display: flex;
   justify-content: center;
   position: relative;
-  align-items: end;
+  align-items: flex-end;
 }
 
 .header__heading {
@@ -166,7 +176,7 @@ body {
   padding: 0 10px;
   overflow: hidden;
   white-space: nowrap;
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-mono);
   position: absolute;
   top: 1rem;
   right: 1rem;
