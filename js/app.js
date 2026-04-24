@@ -24,6 +24,8 @@ document.addEventListener("keydown", (e) => {
     selectorKey = "backspace";
   } else if (key === "Escape") {
     selectorKey = "clear";
+  } else if (key === ".") {
+    handleInput("decimal");
   }
 
   const button = document.querySelector(`[data-value="${selectorKey}"]`);
@@ -115,7 +117,9 @@ function handleInput(action, value) {
 // Rendering Function
 function render() {
   const acButton = document.querySelector(`[data-value="clear"]`);
-  const displayExpression = document.querySelector(".calculator__display--expression");
+  const displayExpression = document.querySelector(
+    ".calculator__display--expression",
+  );
 
   if (state.isError) {
     display.value = "You Broke It.";

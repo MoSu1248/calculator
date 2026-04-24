@@ -213,7 +213,7 @@ body {
   font-size: var(--fs-btn);
   font-weight: var(--fw-normal);
   background: var(--btn-bg);
-  border: none;
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   cursor: pointer;
   box-shadow:
@@ -257,9 +257,11 @@ body {
 }
 
 /* States */
-.calculator__btn:hover {
+.calculator__btn:hover,
+.calculator__btn:focus-visible {
   color: var(--accent-primary);
   transform: scale(1.02);
+  outline: none;
 }
 
 .calculator__btn:active,
@@ -271,7 +273,8 @@ body {
   color: var(--accent-secondary);
 }
 
-.calculator__btn.ac-active {
+.calculator__btn.ac-active,
+.calculator__btn:focus-visible {
   box-shadow:
     0 0 12px rgba(255, 255, 255, 0.8),
     0 6px 12px rgba(46, 46, 54, 0.4);
@@ -281,7 +284,8 @@ body {
 /* Utility override state */
 .calculator__btn--utility:active,
 .calculator__btn--utility.active,
-.calculator__btn--utility:hover {
+.calculator__btn--utility:hover,
+.calculator__btn--utility:focus-visible {
   color: var(--accent-secondary);
 }
 
