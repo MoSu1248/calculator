@@ -115,7 +115,7 @@ function handleInput(action, value) {
 // Rendering Function
 function render() {
   const acButton = document.querySelector(`[data-value="clear"]`);
-  const displayExpression = document.querySelector(".display__expression");
+  const displayExpression = document.querySelector(".calculator__display--expression");
 
   if (state.isError) {
     display.value = "You Broke It.";

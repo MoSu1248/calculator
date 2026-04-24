@@ -56,11 +56,12 @@ body {
   flex-direction: column;
   justify-content: space-between;
   overflow-x: hidden;
+  color: var(--text-primary);
+  padding: 1rem;
 }
 
 /* Header */
 .header {
-  margin: 2rem 0;
   font-size: var(--fs-display);
   color: var(--accent-primary);
   opacity: 0.8;
@@ -79,10 +80,12 @@ body {
   background-color: #5e5e5e;
   height: 2px;
   margin-bottom: 1rem;
-  animation-name: fadeIn;
-  animation-duration: 1s;
   width: 50px;
   transform: translate(-20%);
+
+  animation:
+    fadeIn 1s ease forwards,
+    breathe 5s ease-in-out infinite;
 }
 
 @keyframes fadeIn {
@@ -91,6 +94,22 @@ body {
   }
   to {
     width: 50px;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  60% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  80% {
+    opacity: 0.3;
+    filter: brightness(1.2);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1);
   }
 }
 
@@ -111,26 +130,46 @@ body {
 .calculator__screenContainer {
   width: 80%;
   position: relative;
+  padding: 6rem 1rem 1rem;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow:
+    inset -4px -4px 10px var(--btn-shadow-light),
+    inset 4px 4px 10px var(--btn-shadow-dark);
 }
 
 .calculator__display {
   width: 100%;
-  padding: 6rem 1rem 1rem;
-
   font-size: var(--fs-display);
   text-align: right;
   color: var(--text-primary);
+  border: none;
+  background-color: transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  caret-color: transparent;
+}
 
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
+.calculator__display:focus,
+.calculator__display:focus-visible {
+  outline: none;
+}
 
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-
-  box-shadow:
-    inset -4px -4px 10px var(--btn-shadow-light),
-    inset 4px 4px 10px var(--btn-shadow-dark);
+.calculator__display--expression {
+  font-size: 1rem;
+  opacity: 0.6;
+  text-align: right;
+  padding: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: "JetBrains Mono", monospace;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }
 
 .calculator__display.error-state {
@@ -145,9 +184,12 @@ body {
   z-index: 1;
   font-size: var(--fs-display);
   color: var(--text-secondary);
+  transition:
+    opacity 0.1s ease-in-out,
+    transform 0.1s ease-in-out;
 }
 
-/* Button grid */
+/* Buttons */
 .calculator__btns {
   display: flex;
   flex-direction: column;
@@ -177,11 +219,28 @@ body {
   box-shadow:
     -4px -4px 8px var(--btn-shadow-light),
     4px 4px 8px var(--btn-shadow-dark);
-
   transition: all 0.2s ease-in-out;
 }
 
+.calculator__btn--wide {
+  display: inline-block;
+  transform: scale(1.1, 1.05);
+  font-weight: var(--fw-bold);
+  height: fit-content;
+  vertical-align: middle;
+  line-height: 1;
+}
+
 /* Variants */
+
+.calculator__btn--decimal .calculator__btn--wide {
+  transform: scale(1.4, 1.4);
+  vertical-align: middle;
+  line-height: 1;
+  position: relative;
+  top: -10px;
+}
+
 .calculator__btn--operator,
 .calculator__btn--equals {
   color: var(--accent-secondary);
@@ -189,7 +248,7 @@ body {
   font-weight: var(--fw-bold);
 }
 
-.calculator__btn--clear {
+.calculator__btn--utility {
   color: var(--accent-primary);
 }
 
@@ -200,23 +259,33 @@ body {
 /* States */
 .calculator__btn:hover {
   color: var(--accent-primary);
+  transform: scale(1.02);
 }
 
 .calculator__btn:active,
 .calculator__btn.active {
   transform: scale(0.98);
-
   box-shadow:
     inset -2px -2px 6px var(--btn-shadow-light),
     inset 2px 2px 6px var(--btn-shadow-dark);
-}
-
-/* Clear override state */
-.calculator__btn--clear:active,
-.calculator__btn--clear.active {
   color: var(--accent-secondary);
 }
 
+.calculator__btn.ac-active {
+  box-shadow:
+    0 0 12px rgba(255, 255, 255, 0.8),
+    0 6px 12px rgba(46, 46, 54, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Utility override state */
+.calculator__btn--utility:active,
+.calculator__btn--utility.active,
+.calculator__btn--utility:hover {
+  color: var(--accent-secondary);
+}
+
+/* Footer */
 .footer {
   padding: 1rem;
   text-align: center;
