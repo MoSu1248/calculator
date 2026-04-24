@@ -81,6 +81,10 @@ btnsContainer.addEventListener("click", (e) => {
 function handleInput(action, value) {
   if (blockIfError(action)) return;
 
+  if (state.justEvaluated && (action === "number" || action === "decimal")) {
+    clear();
+  }
+
   switch (action) {
     case "number":
       handleNumber(value);
@@ -110,24 +114,52 @@ function handleInput(action, value) {
 
 // Rendering Function
 function render() {
+  const acButton = document.querySelector(`[data-value="clear"]`);
+  const displayExpression = document.querySelector(".display__expression");
+
   if (state.isError) {
     display.value = "You Broke It.";
     displayOperator.innerHTML = "";
+    if (displayExpression) displayExpression.innerText = "";
+    acButton.classList.add("ac-active");
     return;
   }
 
-  display.value = state.value_2 !== "" ? state.value_2 : state.value_1 || "0";
-  console.log(state);
+  acButton.classList.remove("ac-active");
 
-  if (!state.operator) {
-    displayOperator.innerHTML = "";
-  } else if (state.operator === "*") {
-    displayOperator.innerHTML = "×";
-  } else if (state.operator === "/") {
-    displayOperator.innerHTML = "÷";
-  } else {
-    displayOperator.innerHTML = state.operator;
+  if (displayExpression) {
+    displayExpression.innerText = getExpression(state);
   }
+
+  display.value = state.value_2 !== "" ? state.value_2 : state.value_1 || "0";
+
+  const opPretty =
+    { "*": "×", "/": "÷", "-": "−" }[state.operator] || state.operator;
+  displayOperator.innerHTML = state.operator ? opPretty : "";
+}
+
+function getExpression(state) {
+  if (state.isError) return "";
+
+  const parts = [];
+
+  if (state.value_1 !== "") parts.push(state.value_1);
+
+  if (state.operator) {
+    const opPretty =
+      {
+        "*": "×",
+        "/": "÷",
+        "-": "−",
+        "+": "+",
+      }[state.operator] || state.operator;
+
+    parts.push(opPretty);
+  }
+
+  if (state.value_2 !== "") parts.push(state.value_2);
+
+  return parts.join(" ");
 }
 
 // Math Function
@@ -140,19 +172,32 @@ const divide = (a, b) => {
 };
 
 const operate = (op, a, b) => {
-  a = parseFloat(a);
-  b = parseFloat(b);
+  const parseValue = (val) => {
+    if (val === "-" || val === "" || val == null) return 0;
+    return parseFloat(val);
+  };
+
+  const valA = parseValue(a);
+  const valB = parseValue(b);
+
+  let result;
 
   switch (op) {
     case "+":
-      return add(a, b);
+      result = valA + valB;
+      break;
     case "-":
-      return subtract(a, b);
+      result = valA - valB;
+      break;
     case "*":
-      return multiply(a, b);
+      result = valA * valB;
+      break;
     case "/":
-      return divide(a, b);
+      result = valB === 0 ? NaN : valA / valB;
+      break;
   }
+
+  return Number.isFinite(result) ? result : NaN;
 };
 
 // Clear Function
@@ -166,15 +211,31 @@ function clear() {
 
 // Backspace Function
 function backspace() {
-  if (state.operator && state.value_2 === "") {
-    state.operator = null;
+  if (state.justEvaluated) {
+    clear();
     return;
   }
 
-  if (!state.operator) {
+  if (state.operator !== null) {
+    if (state.value_2 !== "" && state.value_2 !== "0") {
+      state.value_2 = state.value_2.slice(0, -1);
+
+      if (state.value_2 === "" || state.value_2 === "-") {
+        state.value_2 = "0";
+      }
+    } else {
+      state.operator = null;
+      state.value_2 = "";
+    }
+    return;
+  }
+
+  if (state.value_1 !== "" && state.value_1 !== "0") {
     state.value_1 = state.value_1.slice(0, -1);
-  } else {
-    state.value_2 = state.value_2.slice(0, -1);
+
+    if (state.value_1 === "" || state.value_1 === "-") {
+      state.value_1 = "0";
+    }
   }
 }
 
@@ -194,17 +255,29 @@ function handleNumber(value) {
 
 // Operator Function
 function handleOperator(value) {
+  if (state.justEvaluated) {
+    state.justEvaluated = false;
+    state.operator = null;
+    state.value_2 = "";
+  }
   if (state.value_1 === "" && value === "-") {
     state.value_1 = "-";
     return;
   }
 
   if (state.value_1 === "") return;
+  if (state.value_1 === "-") return;
 
   if (canCompute()) {
+    if (state.operator === "/" && Number(state.value_2) === 0) {
+      state.isError = true;
+      render();
+      return;
+    }
+
     const result = operate(state.operator, state.value_1, state.value_2);
 
-    state.value_1 = result.toString();
+    state.value_1 = formatResult(result);
     state.value_2 = "";
   }
 
@@ -222,7 +295,7 @@ function equals() {
 
   const result = operate(state.operator, state.value_1, state.value_2);
 
-  state.value_1 = Number(result.toFixed(10)).toString();
+  state.value_1 = formatResult(result);
   state.value_2 = "";
   state.operator = null;
   state.justEvaluated = true;
@@ -230,12 +303,28 @@ function equals() {
 
 // Decimal Function
 function handleDecimal() {
+  if (state.justEvaluated) {
+    clear();
+    state.justEvaluated = false;
+  }
+
   let current = !state.operator ? state.value_1 : state.value_2;
 
   if (current.includes(".")) return;
 
-  if (!state.operator) state.value_1 += ".";
-  else state.value_2 += ".";
+  if (current === "" || current === "-") {
+    if (!state.operator) {
+      state.value_1 = current + "0.";
+    } else {
+      state.value_2 = "0.";
+    }
+  } else {
+    if (!state.operator) {
+      state.value_1 += ".";
+    } else {
+      state.value_2 += ".";
+    }
+  }
 }
 
 // Percentage Function
@@ -249,14 +338,34 @@ function handlePercentage() {
 
 // Blocking Error
 function blockIfError(action) {
-  if (state.isError && action === "number") {
-    clear();
-    return false;
-  }
-  return state.isError && action !== "clear";
+  if (!state.isError) return false;
+
+  if (action === "clear") return false;
+
+  return true;
 }
 
 // Check fucntion
 function canCompute() {
   return state.operator && state.value_1 !== "" && state.value_2 !== "";
+}
+
+// Formatting fucntion
+function formatResult(number) {
+  if (!Number.isFinite(number)) {
+    state.isError = true;
+    return "You Broke It.";
+  }
+
+  let result = number.toString();
+
+  if (result.includes(".")) {
+    result = Number(number.toFixed(10)).toString();
+  }
+
+  if (result.length > 11) {
+    result = Number(number).toExponential(6);
+  }
+
+  return result;
 }

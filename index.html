@@ -23,25 +23,26 @@
             aria-label="Calculator Display"
             value="0"
           />
+          <div class="display__expression" id="display-expression"></div>
         </div>
 
         <div class="calculator__btns">
           <div class="calculator__row">
             <button
-              class="calculator__btn calculator__btn--clear"
+              class="calculator__btn calculator__btn--utility"
               data-action="clear"
               data-value="clear"
             >
               AC</button
             ><button
-              class="calculator__btn calculator__btn--clear"
+              class="calculator__btn calculator__btn--utility"
               data-action="percentage"
               data-value="%"
             >
               %
             </button>
             <button
-              class="calculator__btn calculator__btn--clear"
+              class="calculator__btn calculator__btn--utility"
               data-action="backspace"
               data-value="backspace"
             >
@@ -52,7 +53,7 @@
               data-action="operator"
               data-value="/"
             >
-              ÷
+              <span class="calculator__btn--wide">÷</span>
             </button>
           </div>
 
@@ -71,7 +72,7 @@
               data-action="operator"
               data-value="*"
             >
-              ×
+              <span class="calculator__btn--wide"> ×</span>
             </button>
           </div>
           <div class="calculator__row">
@@ -89,7 +90,7 @@
               data-action="operator"
               data-value="-"
             >
-              -
+              <span class="calculator__btn--wide">−</span>
             </button>
           </div>
 
@@ -108,7 +109,7 @@
               data-action="operator"
               data-value="+"
             >
-              +
+              <span class="calculator__btn--wide">+</span>
             </button>
           </div>
 
@@ -120,13 +121,19 @@
             >
               0
             </button>
-            <button class="calculator__btn" data-action="decimal">.</button>
+            <button
+              class="calculator__btn calculator__btn--decimal"
+              data-action="decimal"
+              data-value="."
+            >
+              <span class="calculator__btn--wide">.</span>
+            </button>
             <button
               class="calculator__btn calculator__btn--equals"
               data-action="equals"
               data-value="="
             >
-              =
+              <span class="calculator__btn--wide">=</span>
             </button>
           </div>
         </div>
