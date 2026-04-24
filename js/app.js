@@ -268,6 +268,10 @@ function handleOperator(value) {
     state.value_1 = "-";
     return;
   }
+  if (state.operator && state.value_2 === "" && value === "-") {
+    state.value_2 = "-";
+    return;
+  }
 
   if (state.value_1 === "") return;
   if (state.value_1 === "-") return;
