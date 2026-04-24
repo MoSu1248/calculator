@@ -4,35 +4,56 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/styles.css" />
-    <title>Calculator</title>
+    <title>SoftMath</title>
   </head>
   <body>
-    <header class="header"><h1>Calculator</h1></header>
+    <header class="header">
+      <h1 class="header__heading">SoftMath</h1>
+      <span class="header__border" aria-hidden="true"></span>
+    </header>
 
     <main id="main-content">
       <section class="calculator">
-        <input
-          type="text"
-          class="calculator__display"
-          readonly
-          aria-label="Calculator Display"
-        />
+        <div class="calculator__screenContainer">
+          <span class="calculator__operator--value"></span>
+          <input
+            type="text"
+            class="calculator__display"
+            readonly
+            aria-label="Calculator Display"
+            value="0"
+          />
+          <div class="calculator__display--expression"></div>
+        </div>
 
         <div class="calculator__btns">
           <div class="calculator__row">
             <button
-              class="calculator__btn calculator__btn--clear"
+              class="calculator__btn calculator__btn--utility"
               data-action="clear"
+              data-value="clear"
             >
-              C
+              AC</button
+            ><button
+              class="calculator__btn calculator__btn--utility"
+              data-action="percentage"
+              data-value="%"
+            >
+              %
             </button>
-            <button class="calculator__btn" data-action="backspace">⌫</button>
+            <button
+              class="calculator__btn calculator__btn--utility"
+              data-action="backspace"
+              data-value="backspace"
+            >
+              ⌫
+            </button>
             <button
               class="calculator__btn calculator__btn--operator"
               data-action="operator"
               data-value="/"
             >
-              ÷
+              <span class="calculator__btn--wide">÷</span>
             </button>
           </div>
 
@@ -51,7 +72,7 @@
               data-action="operator"
               data-value="*"
             >
-              ×
+              <span class="calculator__btn--wide"> ×</span>
             </button>
           </div>
           <div class="calculator__row">
@@ -65,11 +86,11 @@
               6
             </button>
             <button
-              class="calculator__btn"
+              class="calculator__btn calculator__btn--operator"
               data-action="operator"
               data-value="-"
             >
-              −
+              <span class="calculator__btn--wide">−</span>
             </button>
           </div>
 
@@ -84,31 +105,42 @@
               3
             </button>
             <button
-              class="calculator__btn"
+              class="calculator__btn calculator__btn--operator"
               data-action="operator"
               data-value="+"
             >
-              +
+              <span class="calculator__btn--wide">+</span>
             </button>
           </div>
 
-          <div class="calculator__row">
-            <button class="calculator__btn" data-action="number" data-value="0">
+          <div class="calculator__row calculator__row--last">
+            <button
+              class="calculator__btn calculator__btn--zero"
+              data-action="number"
+              data-value="0"
+            >
               0
             </button>
-            <button class="calculator__btn" data-action="decimal">.</button>
+            <button
+              class="calculator__btn calculator__btn--decimal"
+              data-action="decimal"
+              data-value="."
+            >
+              <span class="calculator__btn--wide">.</span>
+            </button>
             <button
               class="calculator__btn calculator__btn--equals"
               data-action="equals"
+              data-value="="
             >
-              =
+              <span class="calculator__btn--wide">=</span>
             </button>
           </div>
         </div>
       </section>
     </main>
 
-    <footer class="footer">@copyright</footer>
+    <footer class="footer">© 2026 SoftMath. All rights reserved.</footer>
+    <script src="./js/app.js"></script>
   </body>
-  <script src="./js/app.js"></script>
 </html>
