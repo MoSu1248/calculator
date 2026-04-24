@@ -244,17 +244,25 @@ function backspace() {
 }
 
 // Number Function
-function handleNumber(value) {
-  if (!state.operator) {
-    if (state.justEvaluated) {
-      clear();
-      state.justEvaluated = false;
-    }
-
-    state.value_1 = (state.value_1 + value).slice(0, 10);
-  } else {
-    state.value_2 = (state.value_2 + value).slice(0, 10);
+function handleNumber(num) {
+  if (state.justEvaluated) {
+    state.value_1 = num.toString();
+    state.justEvaluated = false;
+    render();
+    return;
   }
+
+  const target = !state.operator ? "value_1" : "value_2";
+
+  if (state[target].length >= 11) return;
+
+  if (state[target] === "0") {
+    state[target] = num.toString();
+  } else {
+    state[target] += num.toString();
+  }
+
+  render();
 }
 
 // Operator Function
