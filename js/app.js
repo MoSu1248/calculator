@@ -135,7 +135,11 @@ function render() {
     displayExpression.innerText = getExpression(state);
   }
 
-  display.value = state.value_2 !== "" ? state.value_2 : state.value_1 || "0";
+  display.value = state.operator
+    ? state.value_2 !== ""
+      ? state.value_2
+      : "0"
+    : state.value_1 || "0";
 
   const opPretty =
     { "*": "×", "/": "÷", "-": "−" }[state.operator] || state.operator;
@@ -188,16 +192,16 @@ const operate = (op, a, b) => {
 
   switch (op) {
     case "+":
-      result = valA + valB;
+      result = add(valA, valB);
       break;
     case "-":
-      result = valA - valB;
+      result = subtract(valA, valB);
       break;
     case "*":
-      result = valA * valB;
+      result = multiply(valA, valB);
       break;
     case "/":
-      result = valB === 0 ? NaN : valA / valB;
+      result = valB === 0 ? NaN : divide(valA, valB);
       break;
   }
 
@@ -220,26 +224,18 @@ function backspace() {
     return;
   }
 
-  if (state.operator !== null) {
-    if (state.value_2 !== "" && state.value_2 !== "0") {
-      state.value_2 = state.value_2.slice(0, -1);
-
-      if (state.value_2 === "" || state.value_2 === "-") {
-        state.value_2 = "0";
-      }
-    } else {
-      state.operator = null;
-      state.value_2 = "";
-    }
+  if (state.value_2 !== "") {
+    state.value_2 = state.value_2.slice(0, -1);
     return;
   }
 
-  if (state.value_1 !== "" && state.value_1 !== "0") {
-    state.value_1 = state.value_1.slice(0, -1);
+  if (state.operator !== null) {
+    state.operator = null;
+    return;
+  }
 
-    if (state.value_1 === "" || state.value_1 === "-") {
-      state.value_1 = "0";
-    }
+  if (state.value_1 !== "") {
+    state.value_1 = state.value_1.slice(0, -1);
   }
 }
 
@@ -248,7 +244,6 @@ function handleNumber(num) {
   if (state.justEvaluated) {
     state.value_1 = num.toString();
     state.justEvaluated = false;
-    render();
     return;
   }
 
@@ -261,8 +256,6 @@ function handleNumber(num) {
   } else {
     state[target] += num.toString();
   }
-
-  render();
 }
 
 // Operator Function
@@ -272,27 +265,26 @@ function handleOperator(value) {
     state.operator = null;
     state.value_2 = "";
   }
+
   if (state.value_1 === "" && value === "-") {
     state.value_1 = "-";
     return;
   }
+
   if (state.operator && state.value_2 === "" && value === "-") {
     state.value_2 = "-";
     return;
   }
 
-  if (state.value_1 === "") return;
-  if (state.value_1 === "-") return;
+  if (state.value_1 === "" || state.value_1 === "-") return;
 
-  if (canCompute()) {
+  if (canCompute() && state.value_2 !== "-") {
     if (state.operator === "/" && Number(state.value_2) === 0) {
       state.isError = true;
-      render();
       return;
     }
 
     const result = operate(state.operator, state.value_1, state.value_2);
-
     state.value_1 = formatResult(result);
     state.value_2 = "";
   }
@@ -361,12 +353,12 @@ function blockIfError(action) {
   return true;
 }
 
-// Check fucntion
+// Check function
 function canCompute() {
   return state.operator && state.value_1 !== "" && state.value_2 !== "";
 }
 
-// Formatting fucntion
+// Formatting function
 function formatResult(number) {
   if (!Number.isFinite(number)) {
     state.isError = true;
